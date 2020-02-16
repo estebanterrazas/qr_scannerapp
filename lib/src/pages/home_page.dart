@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_scannerapp/src/pages/direcciones_pages.dart';
 import 'package:qr_scannerapp/src/pages/mapas_pages.dart';
+import 'package:barcode_scan/barcode_scan.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -26,11 +27,32 @@ class _HomePageState extends State<HomePage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.filter_center_focus),
-        onPressed: (){},
+        onPressed: _qrScan,
         backgroundColor: Theme.of(context).primaryColor,
         ),
 
     );
+  }
+  _qrScan() async {
+
+
+    // https://hablemosdeecommerce.com
+    // geo:40.677382360119466,-73.9716090246094
+     String futureString = '';
+    
+    // try {
+    //   futureString = await BarcodeScanner.scan();
+    // } catch (e) {
+    //   futureString = e.toString();
+    // }
+
+    // print('Future String: $futureString');
+
+
+    // if ( futureString != null ) {
+    //   print('Tenemos informacion');
+    // }
+
   }
 
   Widget _callPage( int paginaActual ){
