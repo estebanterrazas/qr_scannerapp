@@ -1,7 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:qr_scannerapp/src/bloc/scans_bloc.dart';
+import 'package:qr_scannerapp/src/models/scan_model.dart';
 import 'package:qr_scannerapp/src/pages/direcciones_pages.dart';
 import 'package:qr_scannerapp/src/pages/mapas_pages.dart';
+import 'package:qr_scannerapp/src/utils/utils.dart' as utils;
 import 'package:barcode_scan/barcode_scan.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -12,6 +18,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+  final scansBloc = new ScansBloc();
+
   int currentIndex = 0;
   @override
   Widget build(BuildContext context) {
@@ -19,7 +27,8 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text('QR Scanner'),
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.delete_forever), onPressed: (){})
+          IconButton(icon: Icon(Icons.delete_forever), 
+          onPressed: scansBloc.borrarScansTodos,)
         ],
       ),
       body: _callPage(currentIndex),
@@ -27,31 +36,46 @@ class _HomePageState extends State<HomePage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.filter_center_focus),
-        onPressed: _qrScan,
+        onPressed:() => _qrScan(context),
         backgroundColor: Theme.of(context).primaryColor,
         ),
 
     );
   }
-  _qrScan() async {
+  _qrScan(BuildContext context) async {
 
 
     // https://hablemosdeecommerce.com
     // geo:40.677382360119466,-73.9716090246094
-     String futureString = '';
+    //  String futureString = '';
+     String futureString;
     
-    // try {
-    //   futureString = await BarcodeScanner.scan();
-    // } catch (e) {
-    //   futureString = e.toString();
-    // }
+    try {
+      futureString = await BarcodeScanner.scan();
+    } catch (e) {
+      futureString = e.toString();
+    }
 
-    // print('Future String: $futureString');
+   
 
 
-    // if ( futureString != null ) {
-    //   print('Tenemos informacion');
-    // }
+    if ( futureString != null ) {
+
+      final scan = ScanModel(valor: futureString);
+      scansBloc.agregarScan(scan);
+
+
+      if ( Platform.isIOS ) {
+
+        Future.delayed(Duration(milliseconds: 750),(){
+          utils.abrirScan(context, scan);
+        } );
+        
+      }else{
+          utils.abrirScan(context, scan);
+      }
+      
+    }
 
   }
 

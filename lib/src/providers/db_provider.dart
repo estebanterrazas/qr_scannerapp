@@ -2,8 +2,9 @@
 import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:qr_scannerapp/src/models/scan_model.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:qr_scannerapp/src/models/scan_model.dart';
+export 'package:qr_scannerapp/src/models/scan_model.dart';
 
 class DBProvider {
   static Database _database;
@@ -94,4 +95,34 @@ Future<List<ScanModel>> getScansPorTipo(String tipo) async {
 
 }
 
+//actualizar registros
+
+Future<int> updateScan(ScanModel nuevoScan) async{
+
+final db = await database;
+final res = await db.update('Scans', nuevoScan.toJson(), where:'id = ?', whereArgs:[ nuevoScan.id]  );
+
+return res;
+
+}
+
+//Eliminar Registros
+
+Future<int> deleteScan(int id) async{
+
+final db = await database;
+final res = await db.delete('Scans', where: 'id = ?', whereArgs: [id] );
+return res;
+
+}
+
+//Eliminar todo en la tabla
+Future<int> deleteAll() async{
+
+final db = await database;
+final res = await db.rawDelete('DELETE FROM Scans ');
+return res;
+
+
+}
 }
